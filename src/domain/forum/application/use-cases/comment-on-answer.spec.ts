@@ -1,18 +1,18 @@
 import { makeAnswer } from 'test/factories/make-answer'
-import { CommentOnAnswerUseCase } from './comment-on-answer'
 import { InMemoryAnswerCommentsRepository } from 'test/repositories/in-memory-answer-comments-repository'
-import { InMemoryAnswerRepository } from 'test/repositories/in-memory-answer-repository'
+import { CommentOnAnswerUseCase } from '@/domain/forum/application/use-cases/comment-on-answer'
+import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-repository'
 
+let inMemoryAnswersRepository: InMemoryAnswersRepository
 let inMemoryAnswerCommentsRepository: InMemoryAnswerCommentsRepository
-let inMemoryAnswerRepository: InMemoryAnswerRepository
 let sut: CommentOnAnswerUseCase
 
-describe('Comment On Answer', () => {
+describe('Comment on Answer', () => {
   beforeEach(() => {
+    inMemoryAnswersRepository = new InMemoryAnswersRepository()
     inMemoryAnswerCommentsRepository = new InMemoryAnswerCommentsRepository()
-    inMemoryAnswerRepository = new InMemoryAnswerRepository()
     sut = new CommentOnAnswerUseCase(
-      inMemoryAnswerRepository,
+      inMemoryAnswersRepository,
       inMemoryAnswerCommentsRepository,
     )
   })
@@ -20,7 +20,7 @@ describe('Comment On Answer', () => {
   it('should be able to comment on answer', async () => {
     const answer = makeAnswer()
 
-    await inMemoryAnswerRepository.create(answer)
+    await inMemoryAnswersRepository.create(answer)
 
     await sut.execute({
       answerId: answer.id.toString(),
